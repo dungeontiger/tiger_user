@@ -110,7 +110,7 @@ class User
 	
 	public function getKeyStretch()
 	{
-		return $this->keyStretch();
+		return $this->keyStretch;
 	}
 	
 	private function generateHash($password)

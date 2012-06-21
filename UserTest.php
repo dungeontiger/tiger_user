@@ -204,21 +204,51 @@ class UserTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals($user->getUserId(), "user", "Not the user id passed to it.");
 	}
 	
-	public function testCheckPassword()
+	public function testCheckGoodPassword()
 	{
-//		$user = new User("sha1", 10, 10);
-//		$user->createUser("user", "admin1234");
-//		$user->checkPassword("admin1234");
+		$user = new User("sha1", 10, 10);
+		$user->createUser("user", "admin1234");
+		$this->assertTrue($user->checkPassword("admin1234"), "Password check failed");
 	}
 	
-	//
-	// The following tests are for the initializeFromStore method
-	//
-	public function testInit()
+	public function testCheckBadPassword()
 	{
-//		$user = new User("sha1", 10, 10);
-//		$user->initializeFromStore("myUser");
+		$user = new User("sha1", 10, 10);
+		$user->createUser("user", "admin1234");
+		$this->assertFalse($user->checkPassword("Admin1234"), "Password check failed");
 	}
 
+	public function testGetSaltLength()
+	{
+		$user = new User("sha1", 10, 10);
+		$this->assertEquals($user->getSaltLength(),10, "Salt length not the same as what was provided");
+	}
+
+	public function testGetKeyStretch()
+	{
+		$user = new User("sha1", 10, 10);
+		$this->assertEquals($user->getKeyStretch(),10, "Key stretch not the same as what was provided");
+	}
+
+	public function testGetHashFunction()
+	{
+		$user = new User("sha1", 10, 10);
+		$this->assertEquals($user->getHashFunction(),"sha1", "Hash function not the same as what was provided");
+	}
+	
+	public function testGetHash()
+	{
+		$user = new User("sha1", 10, 10);
+		$user->initializeFromStore("user", "xxx", "aaa");
+		$this->assertEquals($user->getHash(), "xxx", "Hash was different than what was provided");
+	}
+
+	public function testGetSalt()
+	{
+		$user = new User("sha1", 10, 10);
+		$user->initializeFromStore("user", "xxx", "aaa");
+		// cannot do an actual compare because salt is randomly generated.
+		$this->assertNotNull($user->getSalt(), "Generated salt was null.");
+	}
 }
 ?>
